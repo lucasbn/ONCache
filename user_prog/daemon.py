@@ -14,7 +14,8 @@ def runcmd(cmd):
 # For kubernetes case. Will only check the pods in the default namespace.
 def pod_watcher():
     print("Watching Pods...")
-    crictl = "crictl --runtime-endpoint unix:///run/containerd/containerd.sock "
+    # crictl = "crictl --runtime-endpoint unix:///run/containerd/containerd.sock "
+    crictl = "crictl --runtime-endpoint unix:///var/run/k3s/containerd/containerd.sock "
     while True:
         namelist = runcmd("kubectl get pods -o wide 2>&1 | grep Running " + r" | awk -F ' ' '{print $1}'").split()
         podsyaml = {}

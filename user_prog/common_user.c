@@ -11,6 +11,8 @@
 #define PATH_MAX 4096
 #endif
 
+int verbose_log = 0;
+
 bool locate_kern_object(char *execname, char *filename, size_t size)
 {
     char *basec, *bname;
@@ -184,7 +186,7 @@ int tc_new_qdisc(const char* dev)
     snprintf(cmd, CMD_MAX,
          "%s qdisc del dev %s clsact 2> /dev/null",
          tc_cmd, dev);
-    if (verbose) printf(" - Run: %s\n", cmd);
+    if (verbose_log) printf(" - Run: %s\n", cmd);
     ret = system(cmd);
     if (!WIFEXITED(ret)) {
         fprintf(stderr,
@@ -193,7 +195,7 @@ int tc_new_qdisc(const char* dev)
         exit(EXIT_FAILURE);
     } else if (WEXITSTATUS(ret) == 2) {
         /* Unfortunately TC use same return code for many errors */
-        if (verbose) printf(" - (First time loading clsact?)\n");
+        if (verbose_log) printf(" - (First time loading clsact?)\n");
     }
 
     /* Step-2: Attach a new clsact qdisc */
@@ -201,7 +203,7 @@ int tc_new_qdisc(const char* dev)
     snprintf(cmd, CMD_MAX,
          "%s qdisc add dev %s clsact",
          tc_cmd, dev);
-    if (verbose) printf(" - Run: %s\n", cmd);
+    if (verbose_log) printf(" - Run: %s\n", cmd);
     ret = system(cmd);
     if (ret) {
         fprintf(stderr,
@@ -230,7 +232,7 @@ int tc_attach_bpf(const char* dev, const char* bpf_obj,
              "%s filter add dev %s ingress bpf da obj %s sec %s",
              tc_cmd, dev, bpf_obj, sec_name);
     }
-    if (verbose) printf(" - Run: %s\n", cmd);
+    if (verbose_log) printf(" - Run: %s\n", cmd);
     ret = system(cmd);
     if (ret) {
         fprintf(stderr,
@@ -257,7 +259,7 @@ int tc_list_filter(const char* dev, bool egress)
              "%s filter show dev %s ingress",
              tc_cmd, dev);
     }
-    if (verbose) printf(" - Run: %s\n", cmd);
+    if (verbose_log) printf(" - Run: %s\n", cmd);
     ret = system(cmd);
     if (ret) {
         fprintf(stderr,
@@ -283,7 +285,7 @@ int tc_remove_filter(const char* dev, bool egress)
              "%s filter del dev %s ingress",
              tc_cmd, dev);
     }
-    if (verbose) printf(" - Run: %s\n", cmd);
+    if (verbose_log) printf(" - Run: %s\n", cmd);
     ret = system(cmd);
     if (ret) {
         fprintf(stderr,

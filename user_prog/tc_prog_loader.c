@@ -43,7 +43,7 @@ int main(int argc, char **argv)
                   long_options, &longindex)) != -1) {
         switch (opt) {
         case 'q':
-            verbose = 0;
+            verbose_log = 0;
             break;
         case 'l':
             do_list = true;
@@ -117,7 +117,7 @@ int main(int argc, char **argv)
     if (ifindex > 0 && !do_list) {
         int err;
 
-        if (verbose)
+        if (verbose_log)
             printf("Dev:%s -- Loading: TC-clsact egress\n", ifname);
 
         err = tc_attach_bpf(ifname, filename, sec_name, egress);

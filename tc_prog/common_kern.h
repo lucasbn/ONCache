@@ -90,19 +90,33 @@ unsigned long long load_word(void *skb,
 #define IS_SRC 1
 #define IS_DST 2
 
-static inline void set_ip_tos(struct __sk_buff *skb, unsigned int off, __u8 tos)
+// static inline void set_ip_tos(struct __sk_buff *skb, unsigned int off, __u8 tos)
+// {
+    // __u8 old_tos = load_byte(skb, off + IP_TOS_OFF);
+    // __u8 new_tos;
+    // if (tos){
+    //     new_tos = old_tos | tos;
+    // } else {
+    //     new_tos = old_tos & 0xf3;
+    // }
+    // bpf_l3_csum_replace(
+    //     skb, off + IP_CSUM_OFF, htons(old_tos), htons(new_tos), 2);
+    // bpf_skb_store_bytes(
+    //     skb, off + IP_TOS_OFF, &new_tos, sizeof(new_tos), 0);
+// }
+
+void set_ip_tos(struct __sk_buff *skb, unsigned int off, __u8 tos)
 {
     __u8 old_tos = load_byte(skb, off + IP_TOS_OFF);
+    // __u8 new_tos = (tos << 2) | (old_tos & 0x03);
     __u8 new_tos;
     if (tos){
         new_tos = old_tos | tos;
     } else {
         new_tos = old_tos & 0xf3;
     }
-    bpf_l3_csum_replace(
-        skb, off + IP_CSUM_OFF, htons(old_tos), htons(new_tos), 2);
-    bpf_skb_store_bytes(
-        skb, off + IP_TOS_OFF, &new_tos, sizeof(new_tos), 0);
+    bpf_skb_store_bytes(skb, off + IP_TOS_OFF, &new_tos, sizeof(new_tos), 0);
+    bpf_l3_csum_replace(skb, off + IP_CSUM_OFF, bpf_htons(old_tos), bpf_htons(new_tos), 2);
 }
 
 static inline void set_new_ip(

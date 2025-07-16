@@ -3,7 +3,7 @@ import subprocess
 import yaml
 import atexit
 
-NODE_IFNAME = "ens1f0np0"
+NODE_IFNAME = "eth1"
 POD_IFNAME = "eth0"
 
 configed_pod = []

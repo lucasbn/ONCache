@@ -72,7 +72,7 @@ int tc_init_e_func(struct __sk_buff *skb) {
     if (inner_eth->h_proto != bpf_htons(ETH_P_IP)) goto out;
     struct iphdr *inner_iph = (struct iphdr *)(inner_eth + 1);
     // Make sure both egress_prog required to and is in established state
-    // if ((inner_iph->tos & 0xc) != 0xc) goto out;
+    if ((inner_iph->tos & 0x4) != 0x4) goto out;
     /////////////////////////// Policy Learning ///////////////////////////
 #ifdef ENABLENP
     struct fivetuple tuple_;
@@ -276,7 +276,7 @@ int tc_init_in_func(struct __sk_buff *ctx) {
     struct iphdr *iphdr = (struct iphdr *)(eth + 1);
 
     // We only learn the flow that is marked as 0x4
-    // if ((iphdr->tos & 0xc) != 0xc) goto out;
+    if ((iphdr->tos & 0x4) != 0x4) goto out;
     ///////////////////////// Header/ifidx Learning ////////////////////
     struct ingressinfo* ingressinfo_ = bpf_map_lookup_elem(&ingress_cache, &iphdr->daddr);
     if (!ingressinfo_) {

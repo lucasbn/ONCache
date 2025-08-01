@@ -55,7 +55,7 @@ def pod_watcher():
         time.sleep(1)
 
 def init_daemon():
-    configed_pod.extend(runcmd("crictl --runtime-endpoint unix:///run/containerd/containerd.sock ps | awk '{print $1}' | sed 1d").split())
+    configed_pod.extend(runcmd("crictl --runtime-endpoint unix:///var/run/k3s/containerd/containerd.sock ps | awk '{print $1}' | sed 1d").split())
 
     runcmd("rm -rf /sys/fs/bpf/tc/globals/*")
     runcmd(f"./tc_prog_loader --dev {NODE_IFNAME} --filename ../tc_prog/tc_prog_kern.o --sec-name tc_init_e --egress --new-qdisc")

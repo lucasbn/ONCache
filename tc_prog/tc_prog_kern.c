@@ -3,7 +3,7 @@
 #define PIN_GLOBAL_NS 2
 #define PORT_MIN 49152
 #define PORT_MAX 65535
-// #define ENABLENP
+#define ENABLENP
 
 
 
